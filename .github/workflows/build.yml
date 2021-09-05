@@ -1,0 +1,90 @@
+name: build
+
+on:
+  pull_request:
+  push:
+  schedule:
+    # at 08:00 on Sunday
+    - cron: "0 8 * * 0"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      # Saw build failures, apparently because awscli is trying to determine
+      # region. This is an undocumented env var that disables that check.
+      #
+      # Discovered from: https://github.com/aws/aws-cli/issues/5262#issuecomment-705832151
+      AWS_EC2_METADATA_DISABLED: true
+
+    steps:
+      # Checks out to the current directory.
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          repository: ImageMagick/ImageMagick
+
+      - name: Run pwd
+        run: pwd
+
+      # Used to force dependencies to re-cache once a day so that we don't run
+      # into any weird cache invalidation problems, so to make sure that
+      # dependency fetches keep working.
+      - name: Get date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y-%m-%d")"
+        shell: bash
+
+      # I'm not sure if it's actually good idea to cache the build, but I'm
+      # trying it because ImageMagick builds are SLOW. The cache expires once a
+      # day so hopefully we won't run into too many build hygiene problems.
+      - name: Cache build
+        id: cache-build
+        uses: actions/cache@v2
+        with:
+          # Don't try to use variables in these paths. They don't seem to work
+          # and it'll lead to hours of confusion. You can use a `~`, but I've
+          # expanded HOME so that finding things is easier.
+          path: |
+            /home/runner/work/imagemagick-builder/imagemagick-builder/Magick++
+            /home/runner/work/imagemagick-builder/imagemagick-builder/MagickCore
+            /home/runner/work/imagemagick-builder/imagemagick-builder/MagickWand
+            /home/runner/work/imagemagick-builder/imagemagick-builder/coders
+            /home/runner/work/imagemagick-builder/imagemagick-builder/filters
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-cache-dependencies-v1
+
+      - name: Run ls
+        run: ls
+
+      - name: Install tooling from Apt
+        run: |
+          sudo add-apt-repository ppa:strukturag/libheif # for libheif-dev
+          sudo add-apt-repository ppa:strukturag/libde265 # for libde265-dev
+          sudo apt-get install awscli libheif-dev
+
+      - name: ./configure
+        run: ./configure --disable-shared --enable-delegate-build --enable-static --with-heic=yes --with-webp=yes --without-modules --without-perl
+
+      - name: Make
+        run: make
+
+      - name: Run ls
+        run: ls utilities
+
+      # Relies on the following secrets from GitHub's GUI configuration:
+      #
+      #     AWS_ACCESS_KEY_ID
+      #     AWS_SECRET_ACCESS_KEY
+      #
+      # They use a specific AWS user whose access is only allowed to this one
+      # S3 bucket.
+      - name: Upload to S3
+        run: |
+          aws s3 cp --acl public-read utilities/magick s3://imagemagick-brandur/
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWSAccessKeyID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWSSecretAccessKey }}
+        if: github.ref == 'refs/heads/master'
