@@ -12,13 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    env:
-      # Saw build failures, apparently because awscli is trying to determine
-      # region. This is an undocumented env var that disables that check.
-      #
-      # Discovered from: https://github.com/aws/aws-cli/issues/5262#issuecomment-705832151
-      AWS_EC2_METADATA_DISABLED: true
-
     steps:
       # Checks out to the current directory.
       - uses: actions/checkout@v2
@@ -87,18 +80,3 @@ jobs:
           files: utilities/magick
           name: master
           tag_name: master
-
-      # Relies on the following secrets from GitHub's GUI configuration:
-      #
-      #     AWS_ACCESS_KEY_ID
-      #     AWS_SECRET_ACCESS_KEY
-      #
-      # They use a specific AWS user whose access is only allowed to this one
-      # S3 bucket.
-      - name: Upload to S3
-        run: |
-          aws s3 cp --acl public-read utilities/magick s3://imagemagick-brandur/
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWSAccessKeyID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWSSecretAccessKey }}
-        if: github.ref == 'refs/heads/master'
