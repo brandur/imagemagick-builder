@@ -13,10 +13,8 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      # Checks out to the current directory.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          fetch-depth: 1
           repository: ImageMagick/ImageMagick
 
       - name: Run pwd
@@ -36,7 +34,7 @@ jobs:
       # day so hopefully we won't run into too many build hygiene problems.
       - name: Cache build
         id: cache-build
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           # Don't try to use variables in these paths. They don't seem to work
           # and it'll lead to hours of confusion. You can use a `~`, but I've
