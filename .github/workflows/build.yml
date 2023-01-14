@@ -58,6 +58,7 @@ jobs:
 
       - name: Get package locations
         run: |
+          dpkg -L dav1d
           dpkg -L libde265-dev
           dpkg -L libheif-dev
 
