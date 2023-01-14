@@ -73,6 +73,7 @@ jobs:
         with:
           name: magick
           path: |
+            config.log
             utilities/magick
 
       - name: Upload GitHub release artifact
