@@ -67,6 +67,12 @@ jobs:
       - name: ./configure
         run: PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH" ./configure --disable-shared --enable-delegate-build --enable-static --with-heic=yes --with-webp=yes --without-modules --without-perl
 
+      - name: Upload config.log artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: config.log
+          path: ./config.log
+
       - name: Make
         run: make
 
@@ -82,9 +88,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: magick
-          path: |
-            ./config.log
-            utilities/magick
+          path: utilities/magick
 
       - name: Upload GitHub release artifact
         uses: softprops/action-gh-release@v1
