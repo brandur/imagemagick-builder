@@ -54,11 +54,11 @@ jobs:
         run: |
           sudo add-apt-repository ppa:strukturag/libheif # for libheif-dev
           sudo add-apt-repository ppa:strukturag/libde265 # for libde265-dev
-          sudo apt-get install dav1d libde265-dev libheif-dev
+          sudo apt-get install libdav1d-dev libde265-dev libheif-dev
 
       - name: Get package locations
         run: |
-          dpkg -L dav1d
+          dpkg -L libdav1d-dev
           dpkg -L libde265-dev
           dpkg -L libheif-dev
 
