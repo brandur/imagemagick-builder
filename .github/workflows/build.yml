@@ -61,6 +61,9 @@ jobs:
           dpkg -L libde265-dev
           dpkg -L libheif-dev
 
+      - name: PKG_CONFIG_PATH debug
+        run: echo $PKG_CONFIG_PATH
+
       - name: ./configure
         run: ./configure --disable-shared --enable-delegate-build --enable-static --with-heic=yes --with-webp=yes --without-modules --without-perl
 
