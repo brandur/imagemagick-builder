@@ -65,7 +65,7 @@ jobs:
         run: echo $PKG_CONFIG_PATH
 
       - name: ./configure
-        run: ./configure --disable-shared --enable-delegate-build --enable-static --with-heic=yes --with-webp=yes --without-modules --without-perl
+        run: PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH" ./configure --disable-shared --enable-delegate-build --enable-static --with-heic=yes --with-webp=yes --without-modules --without-perl
 
       - name: Make
         run: make
