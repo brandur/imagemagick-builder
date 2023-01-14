@@ -71,7 +71,9 @@ jobs:
         run: make
 
       - name: Run ls
-        run: ls utilities
+        run: |
+          ls
+          ls utilities/
 
       - name: ImageMagick format options
         run: utilities/magick identify -list format
