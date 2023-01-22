@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 10
 
     env:
-      RELEASE_TAG: 7.1.0-57
+      RELEASE_TAG: 7.1.0-56
 
     steps:
       - uses: actions/checkout@v3
