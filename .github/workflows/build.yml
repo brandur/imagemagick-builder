@@ -12,9 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    env:
+      RELEASE_TAG: 7.1.0-57
+
     steps:
       - uses: actions/checkout@v3
         with:
+          ref: ${{ env.RELEASE_TAG }}
           repository: ImageMagick/ImageMagick
 
       - name: Run pwd
@@ -96,5 +100,5 @@ jobs:
         if: github.ref == 'refs/heads/master'
         with:
           files: utilities/magick
-          name: master
-          tag_name: master
+          name: ${{ env.RELEASE_TAG }}
+          tag_name: ${{ env.RELEASE_TAG }}
