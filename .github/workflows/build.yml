@@ -49,7 +49,7 @@ jobs:
             /home/runner/work/imagemagick-builder/imagemagick-builder/MagickWand
             /home/runner/work/imagemagick-builder/imagemagick-builder/coders
             /home/runner/work/imagemagick-builder/imagemagick-builder/filters
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-cache-dependencies-v1
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-cache-dependencies-v2
 
       - name: Run ls
         run: ls
