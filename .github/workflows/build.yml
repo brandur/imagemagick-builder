@@ -89,6 +89,11 @@ jobs:
       - name: ImageMagick format options
         run: utilities/magick identify -list format
 
+      - name: Try running from another directory
+        run: |
+          cp utilities/magick /tmp
+          /tmp/magick identify -list format
+
       - name: Upload GitHub build artifact
         uses: actions/upload-artifact@v3
         with:
