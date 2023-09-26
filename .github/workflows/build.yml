@@ -56,8 +56,8 @@ jobs:
 
       - name: Install tooling from Apt
         run: |
-          sudo add-apt-repository ppa:strukturag/libheif # for libheif-dev
-          sudo add-apt-repository ppa:strukturag/libde265 # for libde265-dev
+          # sudo add-apt-repository ppa:strukturag/libheif # for libheif-dev
+          # sudo add-apt-repository ppa:strukturag/libde265 # for libde265-dev
           sudo apt-get install libdav1d-dev libde265-dev libheif-dev
 
       - name: Get package locations
